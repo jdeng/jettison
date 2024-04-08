@@ -197,6 +197,7 @@ func encodeStruct(
 		key []byte // key of the field
 	)
 	noHTMLEscape := opts.flags.has(noHTMLEscaping)
+	omitEmpty := opts.flags.has(omitEmptyFields)
 
 fieldLoop:
 	for i := 0; i < len(flds); i++ {
@@ -233,6 +234,14 @@ fieldLoop:
 		if f.omitEmpty && f.empty(fp) {
 			continue
 		}
+
+		//TODO: special hanlding when the field doesn't have omitempty tag
+		if omitEmpty && f.empty == nil {
+			if emptyf := emptyFuncOf(f.typ); emptyf != nil && emptyf(fp) {
+				continue
+			}
+		}
+
 		key = f.keyEscHTML
 		if noHTMLEscape {
 			key = f.keyNonEsc

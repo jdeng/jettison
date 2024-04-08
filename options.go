@@ -37,6 +37,7 @@ const (
 	noUTF8Coercion
 	noCompact
 	noNumberValidation
+	omitEmptyFields
 )
 
 type encOpts struct {
@@ -158,6 +159,12 @@ func NoStringEscaping() Option {
 // characters in JSON strings.
 func NoHTMLEscaping() Option {
 	return func(o *encOpts) { o.flags.set(noHTMLEscaping) }
+}
+
+// OmitEmptyFields configures an encoder to
+// omit struct fields with zero values.
+func OmitEmptyFields() Option {
+	return func(o *encOpts) { o.flags.set(omitEmptyFields) }
 }
 
 // NoUTF8Coercion configures an encoder to

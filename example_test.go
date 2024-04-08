@@ -195,6 +195,31 @@ func ExampleNilSliceEmpty() {
 	// {"S1":[],"S2":[]}
 }
 
+func ExampleOmitEmptyFields() {
+	type X struct {
+		A string `json:"a"`
+		B int    `json:"b"`
+		C bool   `json:"c"`
+	}
+	x := X{
+		A: "Loreum",
+		B: 0,
+		C: false,
+	}
+	for _, opt := range []jettison.Option{
+		nil, jettison.OmitEmptyFields(),
+	} {
+		b, err := jettison.MarshalOpts(x, opt)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%s\n", string(b))
+	}
+	// Output:
+	// {"a":"Loreum","b":0,"c":false}
+	// {"a":"Loreum"}
+}
+
 func ExampleUnixTime() {
 	t := time.Date(2024, time.December, 24, 12, 24, 42, 0, time.UTC)
 
